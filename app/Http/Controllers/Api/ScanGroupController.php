@@ -50,7 +50,9 @@ class ScanGroupController extends Controller
 
         $scanGroup = ScanGroup::create($data);
 
-        ScanGroupJob::dispatch($keywords, $fileName, $scanGroup);
+        foreach ($keywords as $keyword) {
+            ScanGroupJob::dispatch([$keyword], $fileName, $scanGroup, $request->name);
+        }
 
         return response()->json([
             'status' => true,
