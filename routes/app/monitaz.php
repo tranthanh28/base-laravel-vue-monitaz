@@ -4,6 +4,7 @@ use App\Http\Controllers\Monitaz\ReactionController;
 use App\Http\Controllers\Monitaz\ScanGroupController;
 use App\Http\Controllers\Monitaz\ScanPageController;
 use App\Http\Controllers\Monitaz\ScanInfoController;
+use App\Http\Controllers\Monitaz\TNSController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'reaction'], function () {
@@ -20,4 +21,9 @@ Route::group(['prefix' => 'scan-group'], function () {
 
 Route::group(['prefix' => 'scan-page'], function () {
     Route::get('/', [ScanPageController::class, 'index'])->name('page.index');
+});
+
+Route::group(['prefix' => 'tns'], function () {
+    Route::get('/day-type', [TNSController::class, 'dayIndex'])->name('tns.day');
+    Route::get('/day-type', [TNSController::class, 'weekIndex'])->name('tns.week');
 });

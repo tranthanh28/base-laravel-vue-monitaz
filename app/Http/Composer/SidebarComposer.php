@@ -37,6 +37,42 @@ class SidebarComposer
                 'permission' => "true",
             ],
             [
+                'icon' => 'power',
+                'name' => 'TNS',
+                'url' => request()->root() . '/tns/day-type',
+                'permission' => "true",
+//                'subMenu' => [
+//                    [
+//                        'name' => 'Báo cáo ngày',
+//                        'url' => request()->root() . '/tns/day-type',
+//                        'permission' => "true"
+//                    ],
+//                    [
+//                        'name' => 'Báo cáo tuần',
+//                        'url' => request()->root() . '/tns/week-type',
+//                        'permission' => "true"
+//                    ],
+//                ],
+            ],
+            [
+                'icon' => 'power',
+                'name' => 'Báo cáo tháng',
+                'url' => request()->root() . '/tns/week-type',
+                'permission' => "true",
+//                'subMenu' => [
+//                    [
+//                        'name' => 'Báo cáo ngày',
+//                        'url' => request()->root() . '/tns/day-type',
+//                        'permission' => "true"
+//                    ],
+//                    [
+//                        'name' => 'Báo cáo tuần',
+//                        'url' => request()->root() . '/tns/week-type',
+//                        'permission' => "true"
+//                    ],
+//                ],
+            ],
+            [
                 'icon' => 'user-check',
                 'name' => trans('custom.user_and_roles'),
                 'url' => request()->root() . '/users-and-roles',

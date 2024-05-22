@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ScanInfoController;
 use App\Http\Controllers\Api\ScanGroupController;
 use App\Http\Controllers\Api\ScanPageController;
+use App\Http\Controllers\Api\TNSController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'reaction'], function () {
@@ -57,5 +58,17 @@ Route::group(['prefix' => 'scan-group'], function () {
     Route::post('/', [ScanGroupController::class, 'store']);
     Route::post('/export-excel', [ScanGroupController::class, 'exportExcel']);
     // Route::post('/dowload', [ScanGroupController::class, 'index']);
+});
+
+Route::group(['prefix' => 'tns'], function () {
+    Route::group(['prefix' => 'day'], function () {
+        Route::get('/', [TNSController::class, 'indexDay']);
+        Route::post('/', [TNSController::class, 'storeDay']);
+    });
+
+    Route::group(['prefix' => 'week'], function () {
+        Route::get('/', [TNSController::class, 'indexWeek']);
+        Route::post('/', [TNSController::class, 'storeWeek']);
+    });
 });
 
