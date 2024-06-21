@@ -17,57 +17,20 @@
     </div>
     <FilterForm :formFilter="formFilter" @filter="filterSearchForm"></FilterForm>
 
-    <el-table
-        :data="data.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
-        style="width: 100%">
-      <el-table-column
-          label="name"
-          prop="name">
-      </el-table-column>
-      <el-table-column
-          label="created"
-          prop="created_at">
-      </el-table-column>
-      <el-table-column
-          align="right">
-        <template slot="header" slot-scope="scope">
-          <el-input
-              v-model="search"
-              size="mini"
-              placeholder="Type to search"/>
-        </template>
-        <template slot-scope="scope">
-          <a v-if="scope.row.file_path" :href="urlGenerator(`/storage/tns_data/filtered_daily/${scope.row.file_path}`)" download>
-            <el-button
-                size="mini">
-              <i class="el-icon-download"></i>
-            </el-button>
-          </a>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-        background
-        layout="prev, pager, next"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-size="perPage"
-        :total="totalPages">
-    </el-pagination>
 
     <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible">
-      <DialogUploadForm :form="form" @submit="submit"></DialogUploadForm>
+      <DialogUploadWeekForm :urlApi="urlApi" @submit="submit"></DialogUploadWeekForm>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import DialogUploadForm from "@/app/Monitaz/Components/DialogUploadForm";
+import DialogUploadWeekForm from "@/app/Monitaz/Components/DialogUploadWeekForm";
 import FilterForm from "@/app/Monitaz/Components/FilterForm";
 import StringMethod from "@/core/helpers/string/StringMethod";
 
 export default {
-  components: {DialogUploadForm, FilterForm},
+  components: {DialogUploadWeekForm, FilterForm},
   props: {
     title: {
       type: String,
@@ -99,29 +62,29 @@ export default {
       search: '',
       dialogTableVisible: false,
       dialogFormVisible: false,
-      form: {
-        id: "",
-        name: '',
-        pass_day: '',
-        content_file: "",
-      },
+      formList: [],
       formLabelWidth: '120px',
       errors: "",
       data: [],
     }
   },
   created() {
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('page')) {
-      this.page = urlParams.get('page');
-    }
-    if (urlParams.has('search')) {
-      this.formFilter.search = urlParams.get('search');
-    }
-
-    this.filterSearchForm(this.page)
+    // let urlParams = new URLSearchParams(window.location.search);
+    // if (urlParams.has('page')) {
+    //   this.page = urlParams.get('page');
+    // }
+    // if (urlParams.has('search')) {
+    //   this.formFilter.search = urlParams.get('search');
+    // }
+    //
+    // this.filterSearchForm(this.page)
   },
   methods: {
+    handleCreate() {
+      this.titleDialog = 'Create'
+      this.dialogFormVisible = true
+      this.formList = []
+    },
     filterSearchForm(page) {
       if (page == null) {
         this.page = 1
@@ -147,51 +110,10 @@ export default {
     },
     submit() {
       this.startLoading()
-      if (this.form.id) {
-        this.handleUpdate()
-      } else {
-        this.handleAdd()
-      }
-    },
-    handleEdit(row) {
-      if (row.status == 1) return
-      this.titleDialog = 'Edit'
-      this.dialogFormVisible = true
-      this.form.id = row.id
-      this.form.name = row.name
-      this.form.pass_day = row.pass_day
-      this.form.content_file = ""
-    },
-    handleCreate() {
-      this.titleDialog = 'Create'
-      this.dialogFormVisible = true
-      this.form.id = null
-      this.form.name = ''
-      this.form.pass_day = 60
-      this.form.content_file = ""
+      this.handleAdd()
     },
     handleAdd() {
-      const formData = new FormData();
-      formData.append("file", this.form.content_file);
-      formData.append("name", this.form.name);
-
-      axios.post(`${this.urlApi}`, formData).then((response) => {
-        this.stopLoading()
-        this.getList()
         this.dialogFormVisible = false
-        this.form = {
-          name: '',
-          content_file: "",
-          pass_day: 60,
-        }
-      }).catch((error) => {
-        this.stopLoading()
-        this.$notify.error({
-          title: 'Error',
-          message: 'failed'
-        });
-        this.errors = error.response.data.errors;
-      })
     },
     handleUpdate() {
       axios.put(`${this.urlApi}/${this.form.id}`, this.form).then((response) => {

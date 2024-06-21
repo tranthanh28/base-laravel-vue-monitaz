@@ -3,5 +3,5 @@
 @section('title', 'Reactions')
 
 @section('contents')
-    <day-type></day-type>
+    <week-type></week-type>
 @endsection

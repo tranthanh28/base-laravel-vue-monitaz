@@ -47,27 +47,74 @@ class TNSController extends Controller
 
     public function storeDay(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'file' => 'required'
-        ]);
-        $file = $request->file;
+        try {
+//            $this->validate($request, [
+//                'name' => 'required',
+//                'file' => 'required'
+//            ]);
+            $file = $request->file;
 //        $path = '/excel/day/'. $request->name;
-        $originalName = $request->file->getClientOriginalName();
-        $extension = "." . $request->file->getClientOriginalExtension();
-        $path = '/excel/day/'. $originalName;
-        $fileName = str_replace($extension,"",$originalName);
+            $originalName = $request->file->getClientOriginalName();
+            $extension = "." . $request->file->getClientOriginalExtension();
+            $path = '/excel/day/' . $originalName;
+            $fileName = str_replace($extension, "", $originalName);
 
-        Storage::disk('public')->put($path, file_get_contents($file));
-        $response = Http::get('http://tns.bigdata.io.vn/daily-scan?file_name='. $fileName);
-        $data = $response->json();
-        return response()->json([
-            'status' => true,
-            'message' => 'created successfully',
-            'data' => $data
-        ], 200);
+            Storage::disk('public')->put($path, file_get_contents($file));
+            $response = Http::get('http://tns.bigdata.io.vn/daily-scan?file_name=' . $fileName);
+            $data = $response->json();
+            return response()->json([
+                'status' => true,
+                'message' => 'created successfully',
+                'data' => $data
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json([
+                'status' => false,
+                'message' => 'Error'
+            ], 500);
+        }
+
 
     }
+
+    public function storeWeek(Request $request)
+    {
+        try {
+//            $this->validate($request, [
+//                'name' => 'required',
+//                'file' => 'required'
+//            ]);
+            $listName = [];
+            if ($request->hasFile('file_list')) {
+                $file_tickets = $request->file('file_list');
+                foreach ($file_tickets as $index => $file) {
+                    $originalName = $file->getClientOriginalName();
+                    $extension = "." . $file->getClientOriginalExtension();
+                    $path = '/excel/week/' . $originalName;
+                    $fileName = str_replace($extension, "", $originalName);
+                    Storage::disk('public')->put($path, file_get_contents($file));
+                    $listName[] = $fileName;
+                }
+            }
+            $response = Http::post('http://tns.bigdata.io.vn/weekly-scan', $listName);
+            $data = $response->json();
+            return response()->json([
+                'status' => true,
+                'message' => 'created successfully',
+                'data' => $data
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json([
+                'status' => false,
+                'message' => 'Error'
+            ], 500);
+        }
+
+
+    }
+
 
     public function update(Request $request, $id)
     {

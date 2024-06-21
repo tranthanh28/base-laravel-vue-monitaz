@@ -89,3 +89,4 @@ Vue.component('scan-info', require('./Monitaz/Views/ScanInfo').default);
 Vue.component('scan-page', require('./Monitaz/Views/ScanPage').default);
 Vue.component('scan-group', require('./Monitaz/Views/ScanGroup').default);
 Vue.component('day-type', require('./Monitaz/Views/TNS/DayType').default);
+Vue.component('week-type', require('./Monitaz/Views/TNS/WeekType').default);
