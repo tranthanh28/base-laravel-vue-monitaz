@@ -74,7 +74,7 @@ Route::group(['prefix' => 'tns'], function () {
     });
 });
 
-Route::group(['prefix' => 'notifications'], function () {
+Route::group(['prefix' => 'notifications', 'middleware' => ['cors']], function () {
     Route::group(['prefix' => 'data'], function () {
         Route::get('/alert-notification', [NotificationController::class, 'alertNotification']);
         Route::post('/confirm', [NotificationController::class, 'confirm']);
