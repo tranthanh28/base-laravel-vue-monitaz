@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\ScanInfoController;
 use App\Http\Controllers\Api\ScanGroupController;
 use App\Http\Controllers\Api\ScanPageController;
 use App\Http\Controllers\Api\TNSController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'reaction'], function () {
@@ -61,6 +62,7 @@ Route::group(['prefix' => 'scan-group'], function () {
 });
 
 Route::group(['prefix' => 'tns'], function () {
+    Route::get('/test', [TNSController::class, 'test']);
     Route::group(['prefix' => 'day'], function () {
         Route::get('/', [TNSController::class, 'indexDay']);
         Route::post('/', [TNSController::class, 'storeDay']);
@@ -69,6 +71,15 @@ Route::group(['prefix' => 'tns'], function () {
     Route::group(['prefix' => 'week'], function () {
         Route::get('/', [TNSController::class, 'indexWeek']);
         Route::post('/', [TNSController::class, 'storeWeek']);
+    });
+});
+
+Route::group(['prefix' => 'notifications'], function () {
+    Route::group(['prefix' => 'data'], function () {
+        Route::get('/alert-notification', [NotificationController::class, 'alertNotification']);
+        Route::post('/confirm', [NotificationController::class, 'confirm']);
+        Route::get('/alert-notification-competitor', [NotificationController::class, 'alertNotificationAboutCompetitor']);
+        Route::post('/confirm-competitor', [NotificationController::class, 'confirmAboutCompetitor']);
     });
 });
 
