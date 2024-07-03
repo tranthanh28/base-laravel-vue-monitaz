@@ -19,6 +19,7 @@ class NotifyDataProcess extends AppModel
         'status',
         'is_confirm',
         'notice_by',
+        'noticed_at',
         'confirm_at',
         'created_at',
     ];

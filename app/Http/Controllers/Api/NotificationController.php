@@ -26,7 +26,7 @@ class NotificationController extends Controller
             $timeStart = $halfTime;
         }
 
-        $notification = NotifyDataProcess::where("created_at", ">=", $timeStart)->where("role", 1)->where("is_confirm", 0)->where("uid", $uid)->first();
+        $notification = NotifyDataProcess::where("created_at", ">=", $timeStart)->where("role", 1)->where("is_confirm", 0)->where("uid", $uid)->where("status", 1)->first();
         if (empty($notification)) {
             return response()->json(
                 [
@@ -36,8 +36,12 @@ class NotificationController extends Controller
             );
         }
         $noti_id = $notification->id;
+        NotifyDataProcess::where('id', $noti_id)
+            ->update([
+                'noticed_at' => $timeNow
+            ]);
         $listObject = json_decode($notification->list_objects, true);
-        $message = "";
+        $message = "Thông báo về tin chưa sửa của đối tượng chính: \n";
         foreach ($listObject as $channel => $valueChannel) {
 //            if ($channelName == $channel) {
             $message .= $channel . ":\n";
@@ -84,7 +88,7 @@ class NotificationController extends Controller
             );
         }
 
-        $notification = NotifyDataProcessCompetitor::where("created_at", ">=", $timeStart)->where("role", 1)->where("is_confirm", 0)->where("uid", $uid)->first();
+        $notification = NotifyDataProcessCompetitor::where("created_at", ">=", $timeStart)->where("role", 1)->where("is_confirm", 0)->where("uid", $uid)->where("status", 1)->first();
         if (empty($notification)) {
             return response()->json(
                 [
@@ -94,8 +98,12 @@ class NotificationController extends Controller
             );
         }
         $noti_id = $notification->id;
+        NotifyDataProcessCompetitor::where('id', $noti_id)
+            ->update([
+                'noticed_at' => $timeNow
+            ]);
         $listObject = json_decode($notification->list_objects, true);
-        $message = "";
+        $message = "Thông báo về tin chưa sửa của đối thủ: \n";
         foreach ($listObject as $channel => $valueChannel) {
 //            if ($channelName == $channel) {
             $message .= $channel . ":\n";
@@ -126,7 +134,7 @@ class NotificationController extends Controller
         if ($timeNow >= $halfTime) {
             $timeStart = $halfTime;
         }
-        $notifications = NotifyDataProcess::where("id", $notiId)->where("created_at", ">=", $timeStart)->where("is_confirm", 0)->first();
+        $notifications = NotifyDataProcess::where("id", $notiId)->where("created_at", ">=", $timeStart)->where("is_confirm", 0)->where("status", 1)->first();
 
         if (empty($notifications)) {
             return response()->json(
@@ -172,7 +180,7 @@ class NotificationController extends Controller
                 ]
             );
         }
-        $notifications = NotifyDataProcessCompetitor::where("id", $notiId)->where("created_at", ">=", $timeStart)->where("is_confirm", 0)->first();
+        $notifications = NotifyDataProcessCompetitor::where("id", $notiId)->where("created_at", ">=", $timeStart)->where("is_confirm", 0)->where("status", 1)->first();
 
         if (empty($notifications)) {
             return response()->json(

@@ -32,7 +32,7 @@ class SendNotifications extends Command
         \Log::info("test notification");
         $this->info("notification");
         $timeStart = Carbon::now()->format("Y-m-d H:00:00");
-        $allNotify = NotifyDataAlert::where("created_at", ">", $timeStart)->where("is_confirm", 0)->get();
+        $allNotify = NotifyDataAlert::where("created_at", ">=", $timeStart)->where("is_confirm", 0)->get();
         if ($allNotify->isEmpty()) {
             $this->info("No notification");
             return 0;

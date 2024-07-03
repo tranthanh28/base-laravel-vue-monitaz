@@ -28,6 +28,7 @@ class NotificationsEvent implements ShouldBroadcast
         $this->message = $message;
         $this->noti_id = $noti_id;
         $this->name = $name;
+        \Log::info("Create event xlkh: " . $this->name);
     }
 
     /**
@@ -42,6 +43,7 @@ class NotificationsEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
+        \Log::info("Create pusher xlkh: " . $this->name);
         return ['notification-channel-'. $this->name];
     }
 

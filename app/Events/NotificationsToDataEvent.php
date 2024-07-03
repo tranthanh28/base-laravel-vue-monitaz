@@ -19,20 +19,21 @@ class NotificationsToDataEvent implements ShouldBroadcast
     public $noti_id;
     public $uid;
     public $nameChannel;
-    public $competior;
+    public $competitor;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message, $notiId, $uid, $nameChannel, $competior = false)
+    public function __construct($message, $notiId, $uid, $nameChannel, $competitor = false)
     {
         $this->message = $message;
         $this->noti_id = $notiId;
         $this->uid = $uid;
         $this->nameChannel = $nameChannel;
-        $this->competior = $competior;
-        \Log::info('create event '. $this->nameChannel . '- competitor: '.$this->competior);
+        $this->competitor = $competitor;
+        \Log::info('create event '. $this->nameChannel . '- competitor: '.$this->competitor);
+//        \Log::info([$this->uid, $this->message]);
     }
 
     /**
@@ -47,7 +48,7 @@ class NotificationsToDataEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        \Log::info('pusher to '. $this->nameChannel . '- competitor: '.$this->competior);
+        \Log::info('pusher to '. $this->nameChannel . '- competitor: '.$this->competitor);
         return ['notification-data-'. $this->nameChannel];
     }
 

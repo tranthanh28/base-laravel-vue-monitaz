@@ -32,7 +32,6 @@ class SendNotificationsToDataCompetitor extends Command
     {
         $notiChannels = config('variable.noti_channels');
 
-        \Log::info("test notification to data");
         $this->info("notification to data");
         $timeNow = Carbon::now()->format("Y-m-d H:i:s");
         $timeStart = "";
@@ -51,14 +50,20 @@ class SendNotificationsToDataCompetitor extends Command
         } else {
             return 0;
         }
-//        $allNotify = NotifyDataProcessCompetitor::where("created_at", ">=", $timeStart)->where("status_confirm", 0)->where("status", 1)->get();
-        $allNotify = NotifyDataProcessCompetitor::where("id", "=", 268)->get();
+        $allNotify = NotifyDataProcessCompetitor::where("created_at", ">=", $timeStart)->where("is_confirm", 0)->where("status", 1)->get();
+//        $allNotify = NotifyDataProcessCompetitor::where("created_at", ">=", $timeStart)->where("uid", 341)->where("is_confirm", 0)->where("status", 1)->get();
+//        $allNotify = NotifyDataProcessCompetitor::where("id", "=", 268)->get();
         if ($allNotify->isEmpty()) {
             $this->info("No notification");
             return 0;
         }
-        $message = "";
+        $listIds = $allNotify->pluck("id");
+        NotifyDataProcessCompetitor::whereIn('id', $listIds)
+            ->update([
+                'noticed_at' => $timeNow
+            ]);
         foreach ($allNotify as $notification) {
+            $message = "Thông báo về tin chưa sửa của đối thủ: \n";
             $noti_id = $notification->id;
             $uid = $notification->uid;
             $listObject = json_decode($notification->list_objects, true);
@@ -66,15 +71,19 @@ class SendNotificationsToDataCompetitor extends Command
 //                $this->info($channel);
                 $message .= $channel . ":\n";
                 foreach ($valueChannel as $value) {
-                    $message .="\t" . $value["name"] . "\n";
+                    $message .= "\t" . $value["name"] . "\n";
                 }
             }
+            $notiChannel = "team-data";
+            $nameChannel = $notiChannel . "-" . $uid;
+            $competitor = true;
+            event(new NotificationsToDataEvent($message, $noti_id, $uid, $nameChannel, $competitor));
 
-            foreach ($notiChannels as $notiChannel) {
-                $nameChannel = $notiChannel . "-" . $uid;
-                $competitor = true;
-                event(new NotificationsToDataEvent($message, $noti_id, $uid, $nameChannel, $competitor));
-            }
+//            foreach ($notiChannels as $notiChannel) {
+//                $nameChannel = $notiChannel . "-" . $uid;
+//                $competitor = true;
+//                event(new NotificationsToDataEvent($message, $noti_id, $uid, $nameChannel, $competitor));
+//            }
 
         }
     }

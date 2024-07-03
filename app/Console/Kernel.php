@@ -27,7 +27,16 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-         $schedule->command('send:notifications')->everyMinute();
+        $schedule->command('send:notifications')->cron('03 * * * *');
+//        $schedule->command('send-noti:data')->everyFiveMinutes();
+//        $schedule->command('send-noti:competitor')->everyFiveMinutes();
+
+         $schedule->command('send-noti:data')->cron('1,31 * * * *');
+         $schedule->command('send-noti:competitor')->cron('46 8 * * *');
+         $schedule->command('send-noti:competitor')->cron('31 9 * * *');
+         $schedule->command('send-noti:competitor')->cron('31 14 * * *');
+         $schedule->command('send-noti:competitor')->cron('31 16 * * *');
+//         $schedule->command('send:notifications')->everyMinute();
     }
 
     /**
