@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exports\ReactionExport;
 use App\Filters\App\Monitaz\TNS\TNSFilter;
+use App\Jobs\SendDataWeekJob;
 use App\Models\Monitaz\DailyData\DailyData;
 use App\Http\Controllers\Controller;
 use App\Models\Monitaz\ScanPage\ScanPage;
@@ -85,7 +86,7 @@ class TNSController extends Controller
 //                'name' => 'required',
 //                'file' => 'required'
 //            ]);
-            $listName = [];
+            $nameList = [];
             if ($request->hasFile('file_list')) {
                 $file_tickets = $request->file('file_list');
                 foreach ($file_tickets as $index => $file) {
@@ -94,11 +95,17 @@ class TNSController extends Controller
                     $path = '/excel/week/' . $originalName;
                     $fileName = str_replace($extension, "", $originalName);
                     Storage::disk('public')->put($path, file_get_contents($file));
-                    $listName[] = $fileName;
+                    $nameList[] = $fileName;
                 }
             }
-            $response = Http::post('http://tns.bigdata.io.vn/weekly-scan', $listName);
-            $data = $response->json();
+            $data = [
+                "name_list" => $nameList,
+                "report_type" => $request->get("report_type") ?? null,
+                "report_target" => $request->get("report_target") ?? null
+            ];
+            SendDataWeekJob::dispatch($data);
+
+//            $data = $response->json();
             return response()->json([
                 'status' => true,
                 'message' => 'created successfully',

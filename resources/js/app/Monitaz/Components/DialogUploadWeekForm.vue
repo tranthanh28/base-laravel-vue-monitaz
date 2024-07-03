@@ -1,6 +1,15 @@
 <template>
   <div>
     <el-form ref="ruleForm">
+      <el-form-item label="Loại báo cáo" :label-width="formLabelWidth">
+        <el-select v-model="formDataTNS.report_type" placeholder="please select type report">
+          <el-option label="Kiểu Tuần" value="weekly"></el-option>
+          <el-option label="Kiểu Tháng" value="monthly"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="Report target" :label-width="formLabelWidth">
+        <el-input v-model="formDataTNS.report_target"></el-input>
+      </el-form-item>
       <el-form-item label="File" :label-width="formLabelWidth" style="margin-top: 45px">
         <el-upload
             class="upload-demo"
@@ -14,7 +23,6 @@
             :auto-upload="false"
         >
           <el-button size="small" type="primary">Click to upload</el-button>
-          <div slot="tip" class="el-upload__tip">jpg/png files with a size less than 500kb</div>
         </el-upload>
       </el-form-item>
     </el-form>
@@ -25,7 +33,7 @@
 </template>
 <script>
 export default {
-  name: 'Dialog-Upload-Week-Form',
+  name: 'Dialog-Upload-Week-Form-1',
   props: {
     urlApi: {
       type: String,
@@ -34,6 +42,10 @@ export default {
   },
   data() {
     return {
+      formDataTNS: {
+        "report_type": "weekly",
+        "report_target": ""
+      },
       fileList: [],
       formLabelWidth: '120px',
       rules: {
@@ -63,6 +75,9 @@ export default {
         console.log(file.name)
         formData.append('file_list[]', file.raw);
       });
+      formData.append('report_type', this.formDataTNS.report_type);
+      formData.append('report_target', this.formDataTNS.report_target);
+
 
       axios.post(`${this.urlApi}`, formData).then((response) => {
         this.stopLoading()
