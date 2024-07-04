@@ -65,6 +65,7 @@
 import DialogUploadForm from "@/app/Monitaz/Components/DialogUploadForm";
 import FilterForm from "@/app/Monitaz/Components/FilterForm";
 import StringMethod from "@/core/helpers/string/StringMethod";
+import {urlGenerator} from "@/app/Helpers/AxiosHelper";
 
 export default {
   components: {DialogUploadForm, FilterForm},
@@ -80,6 +81,7 @@ export default {
   },
   data() {
     return {
+      urlGenerator,
       formFilter: {
         search: '',
         status: []
