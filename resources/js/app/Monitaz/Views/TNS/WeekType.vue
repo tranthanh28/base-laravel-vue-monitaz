@@ -8,7 +8,7 @@ export default {
   components: {WeekTypeComponent},
   data() {
     return {
-      title: "Báo cáo tuần TNS ",
+      title: "Báo cáo tuần/tháng TNS ",
       urlApi: "/api/tns/week"
     }
   }

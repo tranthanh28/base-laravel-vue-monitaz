@@ -6,6 +6,7 @@ use App\Exports\ReactionExport;
 use App\Filters\App\Monitaz\TNS\TNSFilter;
 use App\Jobs\SendDataWeekJob;
 use App\Models\Monitaz\DailyData\DailyData;
+use App\Models\Monitaz\ReportProgress\ReportProgress;
 use App\Http\Controllers\Controller;
 use App\Models\Monitaz\ScanPage\ScanPage;
 use Carbon\Carbon;
@@ -38,6 +39,17 @@ class TNSController extends Controller
     {
         $data = DailyData::filters($this->filter)
             ->latest()->paginate(10);
+
+        return response()->json([
+            'status' => true,
+            'message' => '',
+            'data' => $data
+        ], 200);
+    }
+
+    public function indexWeek()
+    {
+        $data = ReportProgress::latest()->paginate(10);
 
         return response()->json([
             'status' => true,
@@ -118,6 +130,25 @@ class TNSController extends Controller
                 'message' => 'Error'
             ], 500);
         }
+    }
+
+    public function getBrandTypeList()
+    {
+        try {
+            $response = Http::get('http://tns.bigdata.io.vn/get-brand-type-list');
+            $data = $response->json();
+            return response()->json([
+                'status' => true,
+                'message' => 'created successfully',
+                'data' => $data['data']
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json([
+                'status' => false,
+                'message' => 'Error'
+            ], 500);
+        }
 
 
     }
@@ -169,5 +200,37 @@ class TNSController extends Controller
             'file_name' => 'required'
         ]);
         return Storage::download($request->file_name);
+    }
+
+    public function exportExcelWeek(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'brand_type' => 'required',
+                'range_date' => 'required',
+            ]);
+
+            $data = [
+                'brand_type' => $request->get("brand_type"),
+                'range_date' => $request->get("range_date"),
+            ];
+
+            //        return $data;
+
+            $response = Http::post('http://tns.bigdata.io.vn/export-top-cost', $data);
+            $data = $response->json();
+            return response()->json([
+                'status' => true,
+                'message' => 'successfully',
+                'data' => $data
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json([
+                'status' => false,
+                'message' => 'Error'
+            ], 500);
+        }
+
     }
 }

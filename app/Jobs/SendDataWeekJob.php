@@ -23,6 +23,7 @@ class SendDataWeekJob implements ShouldQueue
     public function __construct(Array $data)
     {
         $this->data = $data;
+        $this->onQueue('TNS');
     }
 
     /**
@@ -32,6 +33,6 @@ class SendDataWeekJob implements ShouldQueue
      */
     public function handle()
     {
-        Http::post('http://tns.bigdata.io.vn/weekly-scan', $this->data);
+        Http::post('http://tns.bigdata.io.vn/upload-report', $this->data);
     }
 }

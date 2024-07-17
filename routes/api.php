@@ -70,7 +70,9 @@ Route::group(['prefix' => 'tns'], function () {
 
     Route::group(['prefix' => 'week'], function () {
         Route::get('/', [TNSController::class, 'indexWeek']);
+        Route::get('/get-brand-type-list', [TNSController::class, 'getBrandTypeList']);
         Route::post('/', [TNSController::class, 'storeWeek']);
+        Route::post('/export-excel-week', [TNSController::class, 'exportExcelWeek']);
     });
 });
 

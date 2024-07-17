@@ -38,7 +38,7 @@ class SidebarComposer
             ],
             [
                 'icon' => 'power',
-                'name' => 'TNS',
+                'name' => 'TNS Ngày',
                 'url' => request()->root() . '/tns/day-type',
                 'permission' => "true",
 //                'subMenu' => [
@@ -56,7 +56,7 @@ class SidebarComposer
             ],
             [
                 'icon' => 'power',
-                'name' => 'Báo cáo tháng',
+                'name' => 'TNS Tuần/Tháng',
                 'url' => request()->root() . '/tns/week-type',
                 'permission' => "true",
 //                'subMenu' => [

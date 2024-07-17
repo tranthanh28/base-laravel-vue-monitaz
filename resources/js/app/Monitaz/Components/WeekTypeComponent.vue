@@ -15,8 +15,50 @@
         </div>
       </div>
     </div>
-    <FilterForm :formFilter="formFilter" @filter="filterSearchForm"></FilterForm>
+    <FilterForm :formFilter="formFilter" :brands="brands" @filter="exportExcelWeek"></FilterForm>
 
+    <el-table
+        :data="data.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+        style="width: 100%">
+      <el-table-column
+          label="name"
+          prop="name">
+      </el-table-column>
+      <el-table-column
+          label="report_type"
+          prop="report_type">
+      </el-table-column>
+      <el-table-column
+          label="status"
+          prop="status">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status == 2" type="danger">ERROR</el-tag>
+          <el-tag v-if="scope.row.status == 1" type="success">Done</el-tag>
+          <el-tag v-if="scope.row.status == 0" type="warning">Pending</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+          label="created"
+          prop="created_at">
+      </el-table-column>
+      <el-table-column
+          align="right">
+        <template slot="header" slot-scope="scope">
+          <el-input
+              v-model="search"
+              size="mini"
+              placeholder="Type to search"/>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+        background
+        layout="prev, pager, next"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="perPage"
+        :total="totalPages">
+    </el-pagination>
 
     <el-dialog :title="titleDialog" :visible.sync="dialogFormVisible">
       <DialogUploadWeekForm :urlApi="urlApi" @submit="submit"></DialogUploadWeekForm>
@@ -26,7 +68,7 @@
 
 <script>
 import DialogUploadWeekForm from "@/app/Monitaz/Components/DialogUploadWeekForm";
-import FilterForm from "@/app/Monitaz/Components/FilterForm";
+import FilterForm from "@/app/Monitaz/Components/FilterFormWeekType";
 import StringMethod from "@/core/helpers/string/StringMethod";
 
 export default {
@@ -44,9 +86,10 @@ export default {
   data() {
     return {
       formFilter: {
-        search: '',
-        status: []
+        brand_type: "",
+        range_date: ""
       },
+      brands: [],
       formWindowUrl: {
         search: '',
         status: '',
@@ -69,34 +112,79 @@ export default {
     }
   },
   created() {
-    // let urlParams = new URLSearchParams(window.location.search);
-    // if (urlParams.has('page')) {
-    //   this.page = urlParams.get('page');
-    // }
-    // if (urlParams.has('search')) {
-    //   this.formFilter.search = urlParams.get('search');
-    // }
-    //
-    // this.filterSearchForm(this.page)
+    this.getBrands()
+    this.getList()
   },
   methods: {
+    getBrands() {
+      this.startLoading()
+      axios.get(`${this.urlApi}/get-brand-type-list`).then((response) => {
+        this.stopLoading()
+        this.brands = response.data.data
+      }).catch((errors) => {
+        this.stopLoading()
+        this.handleErrorNotPermission(errors)
+      })
+    },
     handleCreate() {
       this.titleDialog = 'Create'
       this.dialogFormVisible = true
       this.formList = []
     },
-    filterSearchForm(page) {
-      if (page == null) {
-        this.page = 1
-      }
-      this.page = 1
-      let search = this.formFilter.search;
-      this.formWindowUrl.search = search;
-      this.formWindowUrl.page = this.page
-      let pageTitle = document.title,
-          query = StringMethod.objectToQueryString(this.formWindowUrl);
-      window.history.pushState("", pageTitle, `?${query}`);
-      this.getList(this.page, search)
+    exportExcelWeek() {
+      this.startLoading()
+      let data = this.formFilter
+      axios.post(`${this.urlApi}/export-excel-week`, data).then((response) => {
+        console.log("data", response)
+        if (response?.data?.data?.code == 1) {
+          const base64String = response.data.data.data
+          const byteCharacters = atob(base64String);
+          const byteArrays = [];
+
+          for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+            const slice = byteCharacters.slice(offset, offset + 512);
+            const byteNumbers = new Array(slice.length);
+
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+          }
+
+          const blob = new Blob(byteArrays, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+          // Tạo URL đối tượng từ Blob
+          const url = URL.createObjectURL(blob);
+
+          // Tạo thẻ <a> để kích hoạt tải xuống
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'file.xlsx'; // Tên tệp khi tải xuống
+          document.body.appendChild(link);
+          link.click();
+
+          // Dọn dẹp
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } else {
+          this.$notify.error({
+            title: 'INFO',
+            message: 'Không có dữ liệu trả về'
+          });
+        }
+
+        this.stopLoading()
+      }).catch((error) => {
+        this.stopLoading()
+        this.$notify.error({
+          title: 'Error',
+          message: 'failed'
+        });
+      })
+
+
     },
     handleCurrentChange(val) {
       this.formWindowUrl.page = val
@@ -114,6 +202,7 @@ export default {
     },
     handleAdd() {
         this.dialogFormVisible = false
+        this.getList()
     },
     handleUpdate() {
       axios.put(`${this.urlApi}/${this.form.id}`, this.form).then((response) => {
@@ -135,7 +224,7 @@ export default {
         this.errors = error.response.data.errors;
       })
     },
-    handleDowload(row) {
+    handleDownload(row) {
       let dataDowload = {
         file_name: row.file_name
       }
