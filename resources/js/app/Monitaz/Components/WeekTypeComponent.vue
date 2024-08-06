@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <FilterForm :formFilter="formFilter" :brands="brands" @filter="exportExcelWeek"></FilterForm>
+<!--    <FilterForm :formFilter="formFilter" :brands="brands" @filter="exportExcelWeek"></FilterForm>-->
 
     <el-table
         :data="data.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
@@ -68,11 +68,11 @@
 
 <script>
 import DialogUploadWeekForm from "@/app/Monitaz/Components/DialogUploadWeekForm";
-import FilterForm from "@/app/Monitaz/Components/FilterFormWeekType";
+// import FilterForm from "@/app/Monitaz/Components/FilterFormWeekType";
 import StringMethod from "@/core/helpers/string/StringMethod";
 
 export default {
-  components: {DialogUploadWeekForm, FilterForm},
+  components: {DialogUploadWeekForm},
   props: {
     title: {
       type: String,
@@ -112,7 +112,7 @@ export default {
     }
   },
   created() {
-    this.getBrands()
+    // this.getBrands()
     this.getList()
   },
   methods: {
@@ -170,7 +170,7 @@ export default {
           URL.revokeObjectURL(url);
         } else {
           this.$notify.error({
-            title: 'INFO',
+            title: 'Error',
             message: 'Không có dữ liệu trả về'
           });
         }

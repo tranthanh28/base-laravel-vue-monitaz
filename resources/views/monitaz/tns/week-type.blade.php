@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Reactions')
+@section('title', 'Week Type')
 
 @section('contents')
     <week-type></week-type>

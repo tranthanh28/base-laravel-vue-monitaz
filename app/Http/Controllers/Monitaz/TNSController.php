@@ -15,4 +15,9 @@ class TNSController extends Controller
     {
         return view('monitaz.tns.week-type');
     }
+
+    public function exportExcel()
+    {
+        return view('monitaz.tns.export-excel');
+    }
 }

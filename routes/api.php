@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\ScanInfoController;
 use App\Http\Controllers\Api\ScanGroupController;
 use App\Http\Controllers\Api\ScanPageController;
 use App\Http\Controllers\Api\TNSController;
+use App\Http\Controllers\Api\TNSExportController;
 use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +74,11 @@ Route::group(['prefix' => 'tns'], function () {
         Route::get('/get-brand-type-list', [TNSController::class, 'getBrandTypeList']);
         Route::post('/', [TNSController::class, 'storeWeek']);
         Route::post('/export-excel-week', [TNSController::class, 'exportExcelWeek']);
+    });
+
+    Route::group(['prefix' => 'report'], function () {
+        Route::get('/get-brand-type-list', [TNSExportController::class, 'getBrandTypeList']);
+        Route::post('/export-excel', [TNSExportController::class, 'exportExcel']);
     });
 });
 
