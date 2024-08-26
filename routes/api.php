@@ -79,6 +79,8 @@ Route::group(['prefix' => 'tns'], function () {
     Route::group(['prefix' => 'report'], function () {
         Route::get('/get-brand-type-list', [TNSExportController::class, 'getBrandTypeList']);
         Route::post('/export-excel', [TNSExportController::class, 'exportExcel']);
+        Route::get('/get-api-select', [TNSExportController::class, 'getApiSelect']);
+        Route::post('/export-excel-custom', [TNSExportController::class, 'exportExcelCustom']);
     });
 });
 

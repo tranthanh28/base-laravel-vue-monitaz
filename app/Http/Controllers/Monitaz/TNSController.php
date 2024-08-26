@@ -20,4 +20,9 @@ class TNSController extends Controller
     {
         return view('monitaz.tns.export-excel');
     }
+
+    public function exportExcelCustom()
+    {
+        return view('monitaz.tns.export-excel-custom');
+    }
 }

@@ -56,7 +56,6 @@ class TNSExportController extends Controller
                 'range_date' => $range_date,
             ];
 
-            return $data;
 
             $response = Http::post('http://tns.bigdata.io.vn/export-top-cost', $data);
             $data = $response->json();
@@ -74,4 +73,51 @@ class TNSExportController extends Controller
         }
 
     }
+
+    public function getApiSelect(Request $request)
+    {
+        $type = config('variable.list_api_export');
+        $type = array_keys($type);
+//        dd($type);
+        return response()->json([
+            'status' => true,
+            'message' => 'successfully',
+            'data' => $type
+        ], 200);
+    }
+
+    public function exportExcelCustom(Request $request)
+    {
+        try {
+            $this->validate($request, [
+                'api_name' => 'required',
+                'month_filter' => 'required',
+            ]);
+            $api_tns = config('variable.api_tns');
+            $apiName = $request->get("api_name");
+            $data = [
+                'date' => $request->get("month_filter"),
+            ];
+            $listApiExport = config('variable.list_api_export');
+            $url = $api_tns . $listApiExport[$apiName];
+
+            $response = Http::post($url, $data);
+            $data = $response->json();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'successfully',
+                'data' => $data
+            ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error($e);
+            return response()->json([
+                'status' => false,
+                'message' => 'Error'
+            ], 500);
+        }
+
+    }
+
 }

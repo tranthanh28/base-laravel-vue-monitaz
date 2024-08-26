@@ -74,19 +74,37 @@ class SidebarComposer
             ],
             [
                 'icon' => 'power',
-                'name' => 'Export excel TNS',
+                'name' => 'Export Top Cost TNS',
                 'url' => request()->root() . '/tns/export-excel',
                 'permission' => "true",
 //                'subMenu' => [
 //                    [
 //                        'name' => 'Báo cáo ngày',
 //                        'url' => request()->root() . '/tns/day-type',
-//                        'permission' => "true"
+//                        'permission' => ""
 //                    ],
 //                    [
 //                        'name' => 'Báo cáo tuần',
 //                        'url' => request()->root() . '/tns/week-type',
-//                        'permission' => "true"
+//                        'permission' => ""
+//                    ],
+//                ],
+            ],
+            [
+                'icon' => 'power',
+                'name' => 'Export Excel TNS',
+                'url' => request()->root() . '/tns/export-excel-custom',
+                'permission' => "true",
+//                'subMenu' => [
+//                    [
+//                        'name' => 'Báo cáo ngày',
+//                        'url' => request()->root() . '/tns/day-type',
+//                        'permission' => ""
+//                    ],
+//                    [
+//                        'name' => 'Báo cáo tuần',
+//                        'url' => request()->root() . '/tns/week-type',
+//                        'permission' => ""
 //                    ],
 //                ],
             ],

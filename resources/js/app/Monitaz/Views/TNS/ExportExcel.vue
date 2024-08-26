@@ -8,7 +8,7 @@ export default {
   components: {ExportExcelComponent},
   data() {
     return {
-      title: "Xuất báo cáo TNS ",
+      title: "Xuất báo cáo top costs ",
       urlApi: "/api/tns/report"
     }
   }

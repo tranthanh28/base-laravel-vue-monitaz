@@ -27,4 +27,5 @@ Route::group(['prefix' => 'tns'], function () {
     Route::get('/day-type', [TNSController::class, 'dayIndex'])->name('tns.day');
     Route::get('/week-type', [TNSController::class, 'weekIndex'])->name('tns.week');
     Route::get('/export-excel', [TNSController::class, 'exportExcel'])->name('tns.export_excel');
+    Route::get('/export-excel-custom', [TNSController::class, 'exportExcelCustom'])->name('tns.export_excel_custom');
 });

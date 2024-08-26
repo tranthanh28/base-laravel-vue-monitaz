@@ -4,16 +4,6 @@
       <div class="col-sm-12 col-md-6">
         <app-breadcrumb :page-title="title" :directory="$t('datatables')" :icon="'grid'"/>
       </div>
-      <div class="col-sm-12 col-md-6 breadcrumb-side-button">
-        <div class="float-md-right mb-3 mb-sm-3 mb-md-0">
-          <button type="button"
-                  class="btn btn-primary btn-with-shadow"
-                  data-toggle="modal"
-                  @click="handleCreate">
-            {{ $t('add') }}
-          </button>
-        </div>
-      </div>
     </div>
 <!--    <FilterForm :formFilter="formFilter" :brands="brands" @filter="exportExcelWeek"></FilterForm>-->
 

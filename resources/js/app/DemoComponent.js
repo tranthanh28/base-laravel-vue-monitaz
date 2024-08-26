@@ -91,3 +91,4 @@ Vue.component('scan-group', require('./Monitaz/Views/ScanGroup').default);
 Vue.component('day-type', require('./Monitaz/Views/TNS/DayType').default);
 Vue.component('week-type', require('./Monitaz/Views/TNS/WeekType').default);
 Vue.component('export-excel', require('./Monitaz/Views/TNS/ExportExcel').default);
+Vue.component('export-excel-custom', require('./Monitaz/Views/TNS/ExportExcelCustom').default);
