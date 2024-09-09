@@ -73,7 +73,9 @@ export default {
       let data = this.formFilter
       axios.post(`${this.urlApi}/export-excel`, data).then((response) => {
         if (response?.data?.data?.code == 1) {
-          const base64String = response.data.data.data
+          let data = response.data.data
+          const base64String = data.data
+          let fileName = data.file_name ?? "file.xlsx"
           const byteCharacters = atob(base64String);
           const byteArrays = [];
 
@@ -97,7 +99,7 @@ export default {
           // Tạo thẻ <a> để kích hoạt tải xuống
           const link = document.createElement('a');
           link.href = url;
-          link.download = 'file.xlsx'; // Tên tệp khi tải xuống
+          link.download = fileName; // Tên tệp khi tải xuống
           document.body.appendChild(link);
           link.click();
 

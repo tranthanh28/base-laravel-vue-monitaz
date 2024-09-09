@@ -101,7 +101,7 @@ class TNSExportController extends Controller
             $listApiExport = config('variable.list_api_export');
             $url = $api_tns . $listApiExport[$apiName];
 
-            $response = Http::post($url, $data);
+            $response = Http::timeout(300)->post($url, $data);
             $data = $response->json();
 
             return response()->json([
@@ -114,7 +114,7 @@ class TNSExportController extends Controller
             \Log::error($e);
             return response()->json([
                 'status' => false,
-                'message' => 'Error'
+                'message' => $e
             ], 500);
         }
 
